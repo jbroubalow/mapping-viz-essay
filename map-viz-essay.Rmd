@@ -11,7 +11,7 @@ library(sf)
 library(scales)
 ```
 
-```{r, echo=FALSE}
+```{r, message=FALSE, echo=FALSE}
 map_1880 <- st_read("D:/clio-II/mapping-viz-essay/us_county_2/US_county_1880.shp")
 census_1880 <- read.csv("D:/clio-II/mapping-viz-essay/nhgis0007_csv/nhgis0007_csv/nhgis0007_ds23_1880_county.csv") %>% 
   rename(Africa = AP3052, Atlantic_Islands = AP3053, Austria = AP3054, Bohemia = AP3055, British_America = AP3056, Central_America = AP3057, China = AP3058, Cuba = AP3059, Denmark = AP3060, England_Wales = AP3061, France = AP3062, German_Empire = AP3063, Britain = AP3064, Holland = AP3065, Ireland = AP3066, Italy = AP3067, Mexico = AP3068, Poland = AP3069, Portugal = AP3070, Russia = AP3071, Scotland = AP3072, Spain = AP3073, Sweden_Norway = AP3074, Switzerland = AP3075, West_Indies = AP3076) %>% 
@@ -44,7 +44,37 @@ leaflet(map_1880_4326_data) %>%
             title = "Immigrant Population Born in China")
 ```
 
-```{r}
+```{r, message=FALSE, echo=FALSE}
+map_1890 <- st_read("D:/clio-II/mapping-viz-essay/US_county_1/US_county_1890.shp")
+census_1890 <- read_csv("D:/clio-II/mapping-viz-essay/nhgis0005_csv/nhgis0005_csv/nhgis0005_ds27_1890_county.csv") %>% 
+rename(Africa = AVL001, Asia = AVL002, Atlantic_Islands = AVL003, Australia = AVL004, Austria = AVL005, Belgium = AVL006, Bohemia = AVL007, Canada_and_Newfoundland = AVL008, Central_America = AVL009, China = AVL010, Cuba_and_West_Indies = AVL011, Denmark = AVL012, England = AVL013, Europe = AVL014, France = AVL015, Germany = AVL016, Greece = AVL017, Holland = AVL018, Hungary = AVL019, India = AVL020, Ireland = AVL021, Italy = AVL022, Japan = AVL023, Luxemburg = AVL024, Mexico = AVL025, Norway = AVL026, Norway_and_Denmark = AVL027, Pacific_Islands = AVL028, Poland = AVL029, Portugal = AVL030, Russia = AVL031, Sandwich_Islands = AVL032, Scotland = AVL033, South_America = AVL034, Spain = AVL035, Sweden = AVL036, Switzerland = AVL037, Turkey = AVL038, Wales = AVL039, Born_at_sea = AVL040, Other = AVL041)
+
+```
+
+```{r, echo=FALSE}
+map_1890_4326 <- map_1890 %>% 
+  filter(!STATENAM %in% "Alaska Territory") %>% 
+  st_transform(4326)
+```
+
+```{r, warning=FALSE, echo=FALSE}
+map_1890_4326_data <- map_1890_4326 %>% 
+  left_join(census_1890, by = "GISJOIN")
+
+census_pal <- colorBin("OrRd",
+                       domain = map_1890_4326_data$China,
+                       bins = 7, na.color = "#808080")
+
+leaflet(map_1890_4326_data) %>% 
+  addTiles() %>% 
+  addPolygons(fillColor = ~census_pal(China),
+              fillOpacity = 1,
+              color = "black",
+              opacity = 1,
+              weight = 1) %>% 
+  addLegend("bottomright", pal = census_pal,
+            values = ~China, opacity = 1,
+            title = "Immigrant Population Born in China")
 
 ```
 
