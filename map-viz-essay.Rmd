@@ -4,6 +4,46 @@ author: "Justin Broubalow"
 date: "April 6, 2017"
 output: html_document
 ---
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+library(leaflet)
+library(tidyverse)
+library(sf)
+library(scales)
+```
+
+```{r, echo=FALSE}
+map_1880 <- st_read("D:/clio-II/mapping-viz-essay/us_county_2/US_county_1880.shp")
+census_1880 <- read.csv("D:/clio-II/mapping-viz-essay/nhgis0007_csv/nhgis0007_csv/nhgis0007_ds23_1880_county.csv") %>% 
+  rename(Africa = AP3052, Atlantic_Islands = AP3053, Austria = AP3054, Bohemia = AP3055, British_America = AP3056, Central_America = AP3057, China = AP3058, Cuba = AP3059, Denmark = AP3060, England_Wales = AP3061, France = AP3062, German_Empire = AP3063, Britain = AP3064, Holland = AP3065, Ireland = AP3066, Italy = AP3067, Mexico = AP3068, Poland = AP3069, Portugal = AP3070, Russia = AP3071, Scotland = AP3072, Spain = AP3073, Sweden_Norway = AP3074, Switzerland = AP3075, West_Indies = AP3076) %>% 
+  subset(select = -c(8:58))
+```
+
+```{r, echo=FALSE}
+map_1880_4326 <- map_1880 %>% 
+  filter(!STATENAM %in% "Alaska Territory") %>% 
+  st_transform(4326)
+```
+
+```{r, warning=FALSE, echo=FALSE}
+map_1880_4326_data <- map_1880_4326 %>% 
+  left_join(census_1880, by = "GISJOIN")
+
+census_pal <- colorBin("OrRd",
+                       domain = map_1880_4326_data$China,
+                       bins = 7, na.color = "#808080")
+
+leaflet(map_1880_4326_data) %>% 
+  addTiles() %>% 
+  addPolygons(fillColor = ~census_pal(China),
+              fillOpacity = 1,
+              color = "black",
+              opacity = 1,
+              weight = 1) %>% 
+  addLegend("bottomright", pal = census_pal,
+            values = ~China, opacity = 1,
+            title = "Immigrant Population Born in China")
+```
+
 ```{r}
 
 ```
