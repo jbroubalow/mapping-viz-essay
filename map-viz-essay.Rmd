@@ -11,17 +11,17 @@ library(sf)
 library(scales)
 ```
 
-```{r, message=FALSE, echo=FALSE}
-map_1880 <- st_read("D:/clio-II/mapping-viz-essay/us_county_2/US_county_1880.shp", stringsAsFactors = FALSE)
+```{r, message=FALSE, include=FALSE}
+map_1880 <- st_read("D:/clio-II/mapping-viz-essay/us_county_2/US_county_1880.shp", quiet = TRUE, stringsAsFactors = FALSE)
 census_1880 <- read.csv("D:/clio-II/mapping-viz-essay/nhgis0007_csv/nhgis0007_csv/nhgis0007_ds23_1880_county.csv") %>% 
   rename(Africa = AP3052, Atlantic_Islands = AP3053, Austria = AP3054, Bohemia = AP3055, British_America = AP3056, Central_America = AP3057, China = AP3058, Cuba = AP3059, Denmark = AP3060, England_Wales = AP3061, France = AP3062, German_Empire = AP3063, Britain = AP3064, Holland = AP3065, Ireland = AP3066, Italy = AP3067, Mexico = AP3068, Poland = AP3069, Portugal = AP3070, Russia = AP3071, Scotland = AP3072, Spain = AP3073, Sweden_Norway = AP3074, Switzerland = AP3075, West_Indies = AP3076) %>% 
   subset(select = -c(8:58))
 
-map_1890 <- st_read("D:/clio-II/mapping-viz-essay/US_county_1/US_county_1890.shp", stringsAsFactors = FALSE)
+map_1890 <- st_read("D:/clio-II/mapping-viz-essay/US_county_1/US_county_1890.shp", quiet = TRUE, stringsAsFactors = FALSE)
 census_1890 <- read_csv("D:/clio-II/mapping-viz-essay/nhgis0005_csv/nhgis0005_csv/nhgis0005_ds27_1890_county.csv") %>% 
 rename(Africa = AVL001, Asia = AVL002, Atlantic_Islands = AVL003, Australia = AVL004, Austria = AVL005, Belgium = AVL006, Bohemia = AVL007, Canada_and_Newfoundland = AVL008, Central_America = AVL009, China = AVL010, Cuba_and_West_Indies = AVL011, Denmark = AVL012, England = AVL013, Europe = AVL014, France = AVL015, Germany = AVL016, Greece = AVL017, Holland = AVL018, Hungary = AVL019, India = AVL020, Ireland = AVL021, Italy = AVL022, Japan = AVL023, Luxemburg = AVL024, Mexico = AVL025, Norway = AVL026, Norway_and_Denmark = AVL027, Pacific_Islands = AVL028, Poland = AVL029, Portugal = AVL030, Russia = AVL031, Sandwich_Islands = AVL032, Scotland = AVL033, South_America = AVL034, Spain = AVL035, Sweden = AVL036, Switzerland = AVL037, Turkey = AVL038, Wales = AVL039, Born_at_sea = AVL040, Other = AVL041)
 
-map_1960 <- st_read("D:/clio-II/mapping-viz-essay/US_county_1960_conflated/US_county_1960_conflated.shp", stringsAsFactors = FALSE)
+map_1960 <- st_read("D:/clio-II/mapping-viz-essay/US_county_1960_conflated/US_county_1960_conflated.shp", quiet = TRUE, stringsAsFactors = FALSE)
 census_1960 <- read_csv("D:/clio-II/mapping-viz-essay/nhgis0007_csv/nhgis0007_csv/nhgis0007_ds91_1960_county.csv") %>% 
 rename(United_Kingdom = B5W001, Ireland = B5W002, Norway = B5W003, Sweden = B5W004, Denmark = B5W005, Netherlands = B5W006, Switzerland = B5W007, France = B5W008, Germany = B5W009, Poland = B5W010, Czechoslovakia = B5W011, Austria = B5W012, Hungary = B5W013, Yugoslavia = B5W014, USSR = B5W015, Lithuania = B5W016, Finland = B5W017, Rumania = B5W018, Greece = B5W019, Italy = B5W020, Portugal = B5W021, Other_European = B5W022, Asia = B5W023, Canada = B5W024, Mexico = B5W025, Other_American = B5W026, Other = B5W027, Not_Reported = B5W028)
 ```
@@ -71,6 +71,7 @@ census_pal <- colorBin("OrRd",
                        domain = c(map_1880_4326_data$china_percent, map_1890_4326_data$china_percent, map_1960_4326_data$asia_percent),
                        bins = 7, na.color = "#808080")
 ```
+> In 1882 Congress infamously enacted the Chinese Exclusion Act, prohibiting the immigration of all Chinese laborers. Congress subsequently passed the Immigration Act of 1924, which lowered immigration quotas to all-time lows, banned the immigration of Africans, Arabs, and Asians outright, and declared those groups ineligible for citizenship based on race. Together these acts comprise two of the most restrictive immigration policies in American history. While the resolve to restrict immigration was apparent, were American immigration regimes effective in excluding Chinese immigrants? By examining the county-level census data of immigrants from China in 1880, 1890, and 1960, we can glean conclusions that begin to answer that question. I argue from the data that the United States saw a marked decline of Chinese immigration between 1880 and 1960, suggesting that U.S. immigration regimes were indeed effective.
 
 ```{r, echo=FALSE}
 leaflet(map_1880_4326_data) %>% 
@@ -85,6 +86,8 @@ leaflet(map_1880_4326_data) %>%
             title = "Percentage County Population born in China, 1880")
 ```
 
+> Data from 1880 serve as a baseline for testing the correlation between restriction and Chinese immigration levels. We can see that Chinese immigrants were concentrated in the western third of the United States where they worked primarily as unskilled laborers. Chinese immigrants comprised particularly high percentages of county populations in California, Wyoming, Oregon, Washington, and especially Idaho, presumably as coal miners or agricultural workers. Overall, Chinese immigrants maintained a strong regional presence but tended to form more than 20 percent of many western counties. 
+
 ```{r, echo=FALSE}
 leaflet(map_1890_4326_data) %>% 
   addTiles() %>% 
@@ -97,6 +100,10 @@ leaflet(map_1890_4326_data) %>%
             values = ~china_percent, opacity = 1,
             title = "Percentage County Population Born in China, 1890")
 ```
+
+> Perhaps the most striking visual aspect of the data eight years after the enactment of the Chinese Exclusion Act is the geographic sprawl of immigrant Chinese. Whereas Chinese immigrants had a high regional concentration with no presence beyond the Midwest prior to 1882, Chinese immigrants in 1890 were present throughout the Midwest and Northeast as well as in Texas and Louisiana. Another distinguishing characteristic of the 1890 data is that Chinese immigrants generally made up less than 10 percent of the populations of the counties in which they were present. Despite the fact that Chinese immigrants accounted for up to 70 percent of western counties' populations in the 1880 data, only very few county populations in California, Nevada, and Idaho were more than 10 percent Chinese immigrants; however, none had more than 20 percent.
+
+> This data strongly suggests that the Alien Exclusion Act had accomplished its aim of severing the flow of immigration of Chinese laborers. Chinese laborers often worked in mining camps or western factories, generally leading to the previous trend of high concentrations. However, we can see from the 1890 data that Chinese immigrants were more dispersed, suggesting that newer Chinese immigrants were not part of a large-scale labor force, a trend in line with the objective of exclusion.
 
 ```{r, echo=FALSE}
 leaflet(map_1960_4326_data) %>% 
@@ -111,4 +118,8 @@ leaflet(map_1960_4326_data) %>%
             title = "Percent County Population Born in Asia, 1960")
 ```
 
+> The 1960 data is notable for a number of reasons. First, the 1960 census was the first census after the Immigration Act of 1924 to include the places of birth of non-white immigrants. Second, the census data does not track the number of immigrants born in China; rather the census uses the catch-all category of "Asia" to describe place of birth.
 
+> While these caveats make 1960 data less than optimal for our purposes, we can nevertheless still begin to draw some useful conclusions about the effectiveness of U.S. immigration regimes. Remarkable again is the geographic distribution of Asian immigrants. Distribution was still widespread but much less continguous than in 1890, with the greaest presence of Asian immigrants having been in the West Coast, Upper Midwest, and Northeast regions. In addition, unlike 1890, no county was composed of more than 10 percent of Asian immigrants, even in urban centers, such as San Francisco and New York City, known for their large Asian communities. There were some exceptions to the prohibition against Asian immigration, but they were few and likely did not contribute a great deal to the immigration pool. Moreover, because the 1960 census only provides one category for "Asia," it is likely that Chinese immigrants comprised but a small number of an already small proportion of the population. 
+
+> While none of these data are enough to fully demonstrate causation let alone correlation between restrictive U.S. immigration regimes and their effectiveness, apparent trends do emerge. Taking these trends together, the data, therefore, seem to demonstrate a correlation between exclusionary policies and the small number of Chinese immigrants in the American population.
